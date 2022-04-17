@@ -1,24 +1,55 @@
+import { Button } from "@mui/material";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./style.css";
-import AudioSrc from "./audio.mp3";
-import React, { useCallback, useRef, useState } from "react";
-import TimeSlider from "react-input-slider";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
-  MdPlayCircle,
-  MdPauseCircle,
-  MdReplay5,
   MdForward5,
+  MdPauseCircle,
+  MdPlayCircle,
+  MdReplay5,
 } from "react-icons/md";
-import Data from "./data.json";
+import TimeSlider from "react-input-slider";
+import AudioSrc from "./audio.mp3";
 import Block from "./components/Block";
+import DataContext from "./context/DataContext";
+import "./style.css";
 import { formatSecond } from "./utils";
-const DataArr = Data.content.document.children;
 
 function App() {
+  const {
+    dataArr,
+    setDataArrAndwriteFile,
+    pointerPosition,
+    groupBlock,
+    makeNewBlock,
+  } = useContext(DataContext);
+
   const audioRef = useRef();
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isPlay, setPlay] = useState(false);
+
+  const handleKeyup = (e) => {
+    if (e.key === "Backspace") {
+      groupBlock();
+    }
+    if (e.key === "Enter") {
+      //handler cut arr
+      makeNewBlock();
+    }
+  };
+
+  useEffect(() => {
+    if (pointerPosition.block !== null && pointerPosition.text !== null) {
+      window.addEventListener("keyup", handleKeyup);
+    }
+    return () => window.removeEventListener("keyup", handleKeyup);
+  }, [pointerPosition]);
 
   const handleLoadedData = () => {
     setDuration(audioRef.current.duration);
@@ -69,8 +100,15 @@ function App() {
 
   return (
     <>
+      <Button
+        onClick={() => setDataArrAndwriteFile()}
+        color="primary"
+        variant="contained"
+      >
+        Export Data
+      </Button>
       <div className="text-container pt-4">
-        {DataArr.map((i, inx) => (
+        {dataArr.map((i, inx) => (
           <Block
             blockObject={i}
             currentTime={
@@ -79,8 +117,8 @@ function App() {
                 : 0
             }
             setCurrentTime={updateCurrentTime}
-            duration={duration}
-            key={inx}
+            position={inx}
+            key={inx + i.data.speaker + i.children.length}
           />
         ))}
       </div>

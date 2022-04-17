@@ -69,3 +69,15 @@ body {
   height: fit-content;
   border-color: white;
 }
+
+.option-item {
+  position: relative;
+}
+
+.item-edit {
+  position: absolute;
+  right: 5px;
+  top: 7px;
+  color: #456990;
+  cursor: pointer;
+}

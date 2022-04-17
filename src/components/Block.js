@@ -2,10 +2,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import Text from "./Text";
 import { MdMessage } from "react-icons/md";
 import { formatSecond } from "../utils";
+import EditSpeakerBox from "./EditSpeakerBox";
 
-const Block = ({ blockObject, currentTime, setCurrentTime }) => {
+const Block = ({ blockObject, currentTime, setCurrentTime, position }) => {
   const [commentList, setCommentList] = useState([]);
-  useEffect(() => console.log("block rerender"));
+  const [isEditname, setEditName] = useState(false);
 
   useEffect(() => {
     if (JSON.stringify(blockObject.data.comments) !== "{}") {
@@ -14,6 +15,8 @@ const Block = ({ blockObject, currentTime, setCurrentTime }) => {
       );
     }
   }, []);
+
+  useEffect(() => console.log("block render"));
 
   const startTimeCommentArr = useMemo(
     () => commentList.map((i) => i.dataStart),
@@ -29,8 +32,20 @@ const Block = ({ blockObject, currentTime, setCurrentTime }) => {
         </div>
       </div>
       <div className="row">
-        <div className="col-2 text-right">
-          {blockObject.data.speaker || "+ Add speaker"}
+        <div className="col-2 ">
+          {isEditname ? (
+            <EditSpeakerBox
+              currentName={blockObject.data.speaker}
+              blockPosition={position}
+              setEditName={setEditName}
+            />
+          ) : (
+            <div className="text-right">
+              <span onClick={() => setEditName(true)}>
+                {blockObject.data.speaker || "+ Add speaker"}
+              </span>
+            </div>
+          )}
         </div>
         <div className="col-6">
           {blockObject.children.map((i, inx) => (
@@ -43,6 +58,8 @@ const Block = ({ blockObject, currentTime, setCurrentTime }) => {
               }
               setCurrentTime={setCurrentTime}
               hasDecoration={startTimeCommentArr.includes(i.data.dataStart)}
+              textPosition={inx}
+              blockPosition={position}
               key={inx}
             />
           ))}
