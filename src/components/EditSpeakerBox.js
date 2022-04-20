@@ -3,18 +3,22 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import DataContext from "../context/DataContext";
 import ModalEdit from "./ModalEdit";
+import { useSlate } from "slate-react";
+import { Transforms, Editor } from "slate";
 
-const EditSpeakerBox = ({ currentName, setEditName, blockPosition }) => {
+const EditSpeakerBox = ({ currentName, setEditName, node }) => {
   const [text, setText] = useState(currentName || "");
   const [isOpenEdit, setOpenEdit] = useState(false);
   const { getDataSpeakerNameOption, changeSpeakerName } =
     useContext(DataContext);
+  const slate = useSlate();
 
   useEffect(() => console.log("autocomplete rerender"));
 
   const onPressEnter = (e) => {
     if (e.key === "Enter") {
-      changeSpeakerName(currentName, text, blockPosition);
+      changeSpeakerName(currentName, text, node);
+
       setEditName(false);
       return;
     } else {
@@ -49,6 +53,7 @@ const EditSpeakerBox = ({ currentName, setEditName, blockPosition }) => {
         currentName={currentName}
         isOpenEdit={isOpenEdit}
         setOpenEdit={setOpenEdit}
+        setEditName={setEditName}
       />
     </>
   );

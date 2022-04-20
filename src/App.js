@@ -15,10 +15,14 @@ import {
 } from "react-icons/md";
 import TimeSlider from "react-input-slider";
 import AudioSrc from "./audio.mp3";
-import Block from "./components/Block";
 import DataContext from "./context/DataContext";
 import "./style.css";
 import { formatSecond } from "./utils";
+
+// Import the Slate components and React plugin.
+import { Slate, Editable } from "slate-react";
+import CustomBlock from "./components/CustomEditor/CustomBlock";
+import CustomText from "./components/CustomEditor/CustomText";
 
 function App() {
   const {
@@ -27,6 +31,7 @@ function App() {
     pointerPosition,
     groupBlock,
     makeNewBlock,
+    editor,
   } = useContext(DataContext);
 
   const audioRef = useRef();
@@ -42,6 +47,7 @@ function App() {
       //handler cut arr
       makeNewBlock();
     }
+    console.log(e.key);
   };
 
   useEffect(() => {
@@ -108,19 +114,34 @@ function App() {
         Export Data
       </Button>
       <div className="text-container pt-4">
-        {dataArr.map((i, inx) => (
-          <Block
-            blockObject={i}
-            currentTime={
-              currentTime >= i.data.start && currentTime < i.data.end
-                ? currentTime
-                : 0
-            }
-            setCurrentTime={updateCurrentTime}
-            position={inx}
-            key={inx + i.data.speaker + i.children.length}
+        <Slate editor={editor} value={dataArr}>
+          <Editable
+            renderElement={(props) => (
+              <CustomBlock
+                {...props}
+                currentTime={
+                  currentTime >= props.element.data.start &&
+                  currentTime < props.element.data.end
+                    ? currentTime
+                    : 0
+                }
+                setCurrentTime={updateCurrentTime}
+              />
+            )}
+            renderLeaf={(props) => (
+              <CustomText
+                currentTime={
+                  currentTime >= props.leaf.data.dataStart &&
+                  currentTime < props.leaf.data.dataEnd
+                    ? currentTime
+                    : 0
+                }
+                setCurrentTime={updateCurrentTime}
+                {...props}
+              ></CustomText>
+            )}
           />
-        ))}
+        </Slate>
       </div>
 
       <div style={{ height: 78 }}></div>

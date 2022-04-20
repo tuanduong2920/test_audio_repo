@@ -15,5 +15,5 @@ Sử dụng React.memo, useMemo, useCallback
 - Click vào tên người nói để chỉnh sửa
 - click vào edit trong từng option gợi ý để chỉnh sửa tất cả tên người nói đang chọn
 - click vào export data để xuất file json
-- doubleClick vào text muốn sửa để chỉnh sửa
-- click vào khoảng trắng giữa các chữ để đặt con trỏ - Enter để tách đoạn - với con trỏ nằm ở đầu đoạn có thể nhấn xoá để gộp đoạn
+- doubleClick vào text để di chuyển đến đoạn hội thoại
+- click vào nội dụng text để chỉnh sửa

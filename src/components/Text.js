@@ -49,10 +49,10 @@ const Text = ({
     />
   ) : (
     <>
-      <span onClick={() => handleShowPointer()}>
+      {/* <span onClick={() => handleShowPointer()}>
         &nbsp;&nbsp;
         {isShowPointer() ? <span style={{ color: "blue" }}>|</span> : ""}
-      </span>
+      </span> */}
 
       <span
         onClick={() => setCurrentTime(textObject.data.dataStart)}

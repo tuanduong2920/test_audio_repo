@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import React, { useContext, useEffect, useState } from "react";
 import DataContext from "../context/DataContext";
+import { useSlate } from "slate-react";
 
 const style = {
   position: "absolute",
@@ -16,7 +17,7 @@ const style = {
   p: 4,
 };
 
-const ModalEdit = ({ currentName, isOpenEdit, setOpenEdit }) => {
+const ModalEdit = ({ currentName, isOpenEdit, setOpenEdit, setEditName }) => {
   useEffect(() => console.log("modal rerender"));
   const { editSpeakerName } = useContext(DataContext);
   const [value, setValue] = useState("");
@@ -25,6 +26,7 @@ const ModalEdit = ({ currentName, isOpenEdit, setOpenEdit }) => {
     editSpeakerName(currentName, value);
     setValue("");
     setOpenEdit(false);
+    setEditName(false);
   };
 
   return (

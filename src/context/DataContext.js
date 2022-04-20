@@ -1,6 +1,12 @@
 import { createContext, useState } from "react";
 import Data from "../data.json";
 import FileSaver from "file-saver";
+import lodash from "lodash";
+
+import { createEditor, Transforms, Editor } from "slate";
+
+// Import the Slate components and React plugin.
+import { withReact, ReactEditor } from "slate-react";
 
 const DataContext = createContext();
 
@@ -10,6 +16,8 @@ export const DataContextProvider = ({ children }) => {
     block: null,
     text: null,
   });
+
+  const [editor, setEditor] = useState(() => withReact(createEditor()));
 
   // const addSpeaker = ()
 
@@ -22,7 +30,7 @@ export const DataContextProvider = ({ children }) => {
   };
 
   const getDataSpeakerNameOption = () => {
-    return dataArr.reduce((nameArray, currentValue) => {
+    return editor.children.reduce((nameArray, currentValue) => {
       if (
         currentValue.data.speaker &&
         !nameArray.includes(currentValue.data.speaker)
@@ -33,35 +41,39 @@ export const DataContextProvider = ({ children }) => {
     }, []);
   };
 
-  const changeSpeakerName = (currentName, newName, blockPosition) => {
+  const changeSpeakerName = (currentName, newName, node) => {
     if (currentName === newName) {
       return;
     }
-    // const newArr = [...dataArr];
-    dataArr[blockPosition].data.speaker = newName;
-    setDataArr(dataArr);
+
+    const pos = ReactEditor.findPath(editor, node);
+    Transforms.setNodes(
+      editor,
+      { data: { ...node.data, speaker: newName } },
+      { at: pos }
+    );
   };
 
   const editSpeakerName = (currentName, newName) => {
     if (currentName === newName) {
       return;
     }
+    // console.log(editor);
 
-    const indexArr = [];
-    dataArr.filter((item, index) => {
-      if (item.data.speaker === currentName) {
-        indexArr.push(index);
+    // const block = [...editor.children];
+
+    editor.children.forEach((node) => {
+      if (node.data.speaker !== "" && node.data.speaker === currentName) {
+        const pos = ReactEditor.findPath(editor, node);
+        Transforms.setNodes(
+          editor,
+          { data: { ...node.data, speaker: newName } },
+          { at: pos }
+        );
       }
-      return item.data.speaker === currentName;
     });
 
-    if (indexArr.length > 0) {
-      const newArr = [...dataArr];
-      indexArr.forEach((pos) => {
-        newArr[pos].data.speaker = newName;
-      });
-      setDataArr(newArr);
-    }
+    // setEditor({ ...editor, children: block });
   };
 
   const editContentText = (blockPosition, textPosition, newText) => {
@@ -135,6 +147,7 @@ export const DataContextProvider = ({ children }) => {
     <DataContext.Provider
       value={{
         dataArr,
+        setDataArr,
         getDataSpeakerNameOption,
         changeSpeakerName,
         editSpeakerName,
@@ -144,6 +157,7 @@ export const DataContextProvider = ({ children }) => {
         setPointerPosition,
         makeNewBlock,
         groupBlock,
+        editor,
       }}
     >
       {children}
