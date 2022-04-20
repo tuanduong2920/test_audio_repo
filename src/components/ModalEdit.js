@@ -20,9 +20,10 @@ const style = {
 const ModalEdit = ({ currentName, isOpenEdit, setOpenEdit, setEditName }) => {
   useEffect(() => console.log("modal rerender"));
   const { editSpeakerName } = useContext(DataContext);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(currentName);
 
   const onSave = () => {
+    console.log(currentName);
     editSpeakerName(currentName, value);
     setValue("");
     setOpenEdit(false);

@@ -9,6 +9,7 @@ import { Transforms, Editor } from "slate";
 const EditSpeakerBox = ({ currentName, setEditName, node }) => {
   const [text, setText] = useState(currentName || "");
   const [isOpenEdit, setOpenEdit] = useState(false);
+  const [editNameModal, setEditNameModal] = useState("");
   const { getDataSpeakerNameOption, changeSpeakerName } =
     useContext(DataContext);
   const slate = useSlate();
@@ -26,6 +27,11 @@ const EditSpeakerBox = ({ currentName, setEditName, node }) => {
     }
   };
 
+  const clickOpenModalEdit = (edittext) => {
+    setEditNameModal(edittext);
+    setOpenEdit(true);
+  };
+
   return (
     <>
       <Autocomplete
@@ -40,7 +46,10 @@ const EditSpeakerBox = ({ currentName, setEditName, node }) => {
         )}
         renderOption={(props, option) => (
           <div className="option-item" key={option}>
-            <div className="item-edit" onClick={() => setOpenEdit(true)}>
+            <div
+              className="item-edit"
+              onClick={() => clickOpenModalEdit(option)}
+            >
               Edit
             </div>
             <div className="col-10" {...props}>
@@ -50,7 +59,7 @@ const EditSpeakerBox = ({ currentName, setEditName, node }) => {
         )}
       />
       <ModalEdit
-        currentName={currentName}
+        currentName={editNameModal}
         isOpenEdit={isOpenEdit}
         setOpenEdit={setOpenEdit}
         setEditName={setEditName}
