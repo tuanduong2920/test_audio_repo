@@ -22,7 +22,7 @@ export const DataContextProvider = ({ children }) => {
   // const addSpeaker = ()
 
   const setDataArrAndwriteFile = () => {
-    Data.content.document.children = dataArr;
+    Data.content.document.children = editor.children;
     const blob = new Blob([JSON.stringify(Data)], {
       type: "application/json;charset=utf-8",
     });
